@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#08090b">
   <title>AURA Decantes | Perfumaria Fracionada Exclusiva</title>
   
   <!-- Fontes Google -->
@@ -16,8 +17,8 @@
   <style>
     :root {
       --bg-dark: #08090b;
-      --bg-card: rgba(22, 24, 29, 0.7);
-      --bg-card-hover: rgba(28, 31, 38, 0.9);
+      --bg-card: rgba(22, 24, 29, 0.75);
+      --bg-card-hover: rgba(28, 31, 38, 0.95);
       --border-color: rgba(212, 175, 55, 0.18);
       --border-active: rgba(212, 175, 55, 0.55);
       --gold-primary: #d4af37;
@@ -25,6 +26,8 @@
       --gold-dark: #997819;
       --text-main: #f3f4f6;
       --text-muted: #9ca3af;
+      --danger: #ef4444;
+      --success: #25d366;
       --radius: 16px;
     }
 
@@ -34,6 +37,18 @@
       padding: 0;
       font-family: 'Plus Jakarta Sans', sans-serif;
       -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Scrollbar personalizada */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-dark);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(212, 175, 55, 0.3);
+      border-radius: 999px;
     }
 
     body {
@@ -47,6 +62,10 @@
       padding-bottom: 90px;
     }
 
+    body.no-scroll {
+      overflow: hidden;
+    }
+
     .container {
       width: 100%;
       max-width: 1140px;
@@ -54,11 +73,49 @@
       padding: 0 20px;
     }
 
+    /* TOAST NOTIFICATION */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 300;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: #14171d;
+      border: 1px solid var(--gold-primary);
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      transform: translateX(120%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: auto;
+    }
+
+    .toast.show {
+      transform: translateX(0);
+    }
+
+    .toast.error {
+      border-color: var(--danger);
+    }
+
     /* HEADER */
     header {
-      padding: 24px 0;
+      padding: 20px 0;
       border-bottom: 1px solid rgba(255, 255, 255, 0.06);
       backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       position: sticky;
       top: 0;
       z-index: 40;
@@ -110,12 +167,6 @@
       text-transform: uppercase;
     }
 
-    .nav-actions {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-
     .bag-btn {
       position: relative;
       background: rgba(255, 255, 255, 0.05);
@@ -148,12 +199,17 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: transform 0.2s ease;
+    }
+
+    .badge-count.bump {
+      transform: scale(1.3);
     }
 
     /* HERO */
     .hero {
       text-align: center;
-      padding: 55px 0 35px;
+      padding: 50px 0 30px;
     }
 
     .badge-origin {
@@ -188,7 +244,7 @@
     .hero-sub {
       color: var(--text-muted);
       max-width: 600px;
-      margin: 0 auto 28px;
+      margin: 0 auto 26px;
       font-size: 15px;
       line-height: 1.6;
     }
@@ -213,7 +269,7 @@
       gap: 6px;
     }
 
-    /* CATALOG GRID */
+    /* CATALOG & FILTERS */
     .catalog-section {
       padding: 20px 0 60px;
     }
@@ -221,10 +277,10 @@
     .section-header {
       display: flex;
       justify-content: space-between;
-      align-items: flex-end;
-      margin-bottom: 30px;
+      align-items: center;
+      margin-bottom: 24px;
       flex-wrap: wrap;
-      gap: 15px;
+      gap: 16px;
     }
 
     .section-title {
@@ -234,6 +290,42 @@
       display: flex;
       align-items: center;
       gap: 10px;
+    }
+
+    .filter-controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .search-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 12px;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .search-input {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-color);
+      border-radius: 999px;
+      padding: 9px 14px 9px 36px;
+      color: #fff;
+      font-size: 13px;
+      outline: none;
+      width: 240px;
+      transition: border-color 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: var(--gold-primary);
     }
 
     .cards-grid {
@@ -254,13 +346,14 @@
       transition: all 0.3s ease;
       position: relative;
       backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
     }
 
     .card:hover {
       background: var(--bg-card-hover);
       border-color: var(--border-active);
       transform: translateY(-4px);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
     }
 
     .card-top {
@@ -268,6 +361,7 @@
       justify-content: space-between;
       align-items: flex-start;
       margin-bottom: 12px;
+      gap: 8px;
     }
 
     .card-brand {
@@ -285,6 +379,7 @@
       padding: 4px 10px;
       border-radius: 999px;
       border: 1px solid rgba(212, 175, 55, 0.25);
+      white-space: nowrap;
     }
 
     .card-name {
@@ -303,7 +398,8 @@
     }
 
     .notes-box {
-      background: rgba(0, 0, 0, 0.25);
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.04);
       border-radius: 10px;
       padding: 10px 12px;
       margin-bottom: 20px;
@@ -316,7 +412,7 @@
 
     .notes-box strong {
       color: var(--gold-light);
-      font-size: 11px;
+      font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 1px;
     }
@@ -326,7 +422,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.35);
       padding: 5px;
       border-radius: 12px;
       margin-bottom: 20px;
@@ -351,7 +447,7 @@
     .size-btn span {
       font-size: 10px;
       font-weight: 400;
-      opacity: 0.7;
+      opacity: 0.75;
     }
 
     .size-btn.active {
@@ -406,11 +502,15 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      transition: opacity 0.2s;
+      transition: opacity 0.2s, transform 0.1s;
     }
 
     .btn-buy-wa:hover {
       opacity: 0.92;
+    }
+
+    .btn-buy-wa:active {
+      transform: scale(0.98);
     }
 
     .btn-add-bag {
@@ -428,7 +528,7 @@
     }
 
     .btn-add-bag:hover {
-      background: rgba(212, 175, 55, 0.15);
+      background: rgba(212, 175, 55, 0.18);
       border-color: var(--gold-primary);
     }
 
@@ -436,8 +536,9 @@
     .bag-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0, 0, 0, 0.72);
       backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
       z-index: 99;
       opacity: 0;
       pointer-events: none;
@@ -455,7 +556,7 @@
       right: 0;
       bottom: 0;
       width: 100%;
-      max-width: 450px;
+      max-width: 440px;
       background: #0f1115;
       border-left: 1px solid var(--border-color);
       z-index: 100;
@@ -484,6 +585,25 @@
       font-size: 18px;
     }
 
+    .bag-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .bag-clear-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 11px;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    .bag-clear-btn:hover {
+      color: var(--danger);
+    }
+
     .bag-close {
       background: none;
       border: none;
@@ -491,6 +611,7 @@
       cursor: pointer;
       display: flex;
       align-items: center;
+      padding: 4px;
     }
 
     .bag-items {
@@ -499,17 +620,18 @@
       padding: 20px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
     }
 
     .bag-item {
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid rgba(255, 255, 255, 0.07);
       border-radius: 12px;
-      padding: 12px;
+      padding: 12px 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 10px;
     }
 
     .bag-item-info h4 {
@@ -526,21 +648,26 @@
     .bag-item-controls {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
     .bag-qty-btn {
-      width: 24px;
-      height: 24px;
+      width: 26px;
+      height: 26px;
       background: rgba(255, 255, 255, 0.08);
-      border: none;
+      border: 1px solid rgba(255, 255, 255, 0.1);
       color: #fff;
       border-radius: 6px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+
+    .bag-qty-btn:hover {
+      background: rgba(212, 175, 55, 0.25);
     }
 
     .empty-bag {
@@ -548,17 +675,18 @@
       color: var(--text-muted);
       padding: 40px 10px;
       font-size: 14px;
+      line-height: 1.6;
     }
 
     /* FREIGHT SECTION IN CART */
     .freight-box {
       padding: 16px 20px;
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(0, 0, 0, 0.45);
       border-top: 1px solid rgba(255, 255, 255, 0.06);
     }
 
     .freight-title {
-      font-size: 12px;
+      font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 1px;
       color: var(--gold-light);
@@ -572,12 +700,13 @@
       font-size: 10px;
       color: var(--text-muted);
       font-weight: normal;
+      text-transform: none;
     }
 
     .cep-input-group {
       display: flex;
       gap: 8px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .cep-input {
@@ -604,6 +733,12 @@
       font-weight: 600;
       font-size: 13px;
       cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .cep-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
     .shipping-options {
@@ -617,21 +752,23 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 8px 10px;
+      padding: 9px 12px;
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 8px;
       font-size: 12px;
       cursor: pointer;
+      transition: all 0.2s;
     }
 
     .shipping-option.selected {
       border-color: var(--gold-primary);
-      background: rgba(212, 175, 55, 0.12);
+      background: rgba(212, 175, 55, 0.14);
     }
 
     .shipping-option span {
       color: var(--text-muted);
+      font-size: 11px;
     }
 
     .shipping-option strong {
@@ -680,6 +817,11 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
+      transition: opacity 0.2s;
+    }
+
+    .btn-checkout-wa:hover {
+      opacity: 0.92;
     }
 
     /* FLOATING WHATSAPP BUTTON */
@@ -711,6 +853,7 @@
       position: fixed;
       inset: 0;
       background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(4px);
       z-index: 200;
       display: none;
       align-items: center;
@@ -754,6 +897,15 @@
       .cards-grid {
         grid-template-columns: 1fr;
       }
+      .search-input {
+        width: 100%;
+      }
+      .filter-controls {
+        width: 100%;
+      }
+      .search-box {
+        width: 100%;
+      }
       .floating-wa {
         bottom: 20px;
         right: 20px;
@@ -764,6 +916,9 @@
   </style>
 </head>
 <body>
+
+  <!-- CONTAINER DE NOTIFICAÇÕES -->
+  <div class="toast-container" id="toast-container"></div>
 
   <!-- HEADER -->
   <header>
@@ -779,7 +934,7 @@
       </a>
 
       <div class="nav-actions">
-        <button class="bag-btn" onclick="toggleBag(true)">
+        <button class="bag-btn" onclick="toggleBag(true)" aria-label="Abrir sacola de compras">
           <i data-lucide="shopping-bag" style="width: 18px; height: 18px;"></i>
           <span>Sacola</span>
           <div class="badge-count" id="cart-counter">0</div>
@@ -814,7 +969,20 @@
       <div class="section-header">
         <div class="section-title">
           <i data-lucide="sparkle" style="color: var(--gold-primary);"></i>
-          Coleção Disponível em Estoque
+          Coleção em Estoque
+        </div>
+
+        <div class="filter-controls">
+          <div class="search-box">
+            <i data-lucide="search" style="width: 16px; height: 16px;"></i>
+            <input 
+              type="text" 
+              id="catalog-search" 
+              class="search-input" 
+              placeholder="Buscar perfume ou nota..." 
+              oninput="renderCatalog()"
+            >
+          </div>
         </div>
       </div>
 
@@ -826,12 +994,15 @@
 
   <!-- SLIDE-OVER BAG / CART -->
   <div class="bag-overlay" id="bag-overlay" onclick="toggleBag(false)"></div>
-  <div class="bag-panel" id="bag-panel">
+  <div class="bag-panel" id="bag-panel" aria-hidden="true">
     <div class="bag-header">
-      <h3>Sua Sacola de Decantes</h3>
-      <button class="bag-close" onclick="toggleBag(false)">
-        <i data-lucide="x" style="width: 22px; height: 22px;"></i>
-      </button>
+      <h3>Sua Sacola</h3>
+      <div class="bag-header-actions">
+        <button class="bag-clear-btn" id="clear-bag-btn" onclick="clearBag()" style="display: none;">Limpar</button>
+        <button class="bag-close" onclick="toggleBag(false)" aria-label="Fechar sacola">
+          <i data-lucide="x" style="width: 22px; height: 22px;"></i>
+        </button>
+      </div>
     </div>
 
     <div class="bag-items" id="bag-items-list">
@@ -845,8 +1016,17 @@
         <span class="freight-origin">Origem: Miranda - MS</span>
       </div>
       <div class="cep-input-group">
-        <input type="text" id="dest-cep" class="cep-input" placeholder="Seu CEP (ex: 79380-000)" maxlength="9" oninput="maskCep(this)">
-        <button class="cep-btn" onclick="calculateShipping()">Calcular</button>
+        <input 
+          type="text" 
+          id="dest-cep" 
+          class="cep-input" 
+          placeholder="Digite seu CEP (ex: 79380-000)" 
+          maxlength="9" 
+          inputmode="numeric"
+          oninput="maskCep(this)"
+          onkeydown="if(event.key === 'Enter') calculateShipping()"
+        >
+        <button class="cep-btn" id="cep-btn" onclick="calculateShipping()">Calcular</button>
       </div>
       <div id="shipping-result-box" class="shipping-options" style="display: none;">
         <!-- Opções de frete calculadas -->
@@ -876,32 +1056,32 @@
   </div>
 
   <!-- BOTAO FLUTUANTE WHATSAPP -->
-  <a href="#" class="floating-wa" onclick="directContactWA(event)" title="Falar no WhatsApp">
-    <i data-lucide="message-circle" style="width: 30px; height: 30px;"></i>
+  <a href="#" class="floating-wa" onclick="directContactWA(event)" title="Falar no WhatsApp" aria-label="Falar no WhatsApp">
+    <i data-lucide="message-circle" style="width: 28px; height: 28px;"></i>
   </a>
 
   <!-- MODAL DE FALLBACK DE REDIRECIONAMENTO -->
   <div class="wa-fallback-modal" id="wa-fallback-modal">
     <div class="wa-modal-content">
       <i data-lucide="check-circle-2" style="width: 48px; height: 48px; color: #25d366; margin-bottom: 12px;"></i>
-      <h3 style="color: #fff; margin-bottom: 8px; font-family: 'Cinzel', serif;">Tudo pronto!</h3>
-      <p style="color: var(--text-muted); font-size: 13px;">Se o WhatsApp não abriu sozinho, clique no botão verde abaixo para enviar sua mensagem:</p>
-      <a href="#" id="wa-fallback-link" target="_blank" class="wa-modal-btn">
+      <h3 style="color: #fff; margin-bottom: 8px; font-family: 'Cinzel', serif;">Pedido Pronto!</h3>
+      <p style="color: var(--text-muted); font-size: 13px; line-height: 1.5;">Se o WhatsApp não abriu automaticamente, toque no botão abaixo para enviar sua mensagem:</p>
+      <a href="#" id="wa-fallback-link" target="_blank" rel="noopener noreferrer" class="wa-modal-btn" onclick="closeWaFallback()">
         <i data-lucide="message-circle" style="width: 20px; height: 20px;"></i>
         Abrir WhatsApp Agora
       </a>
       <button onclick="closeWaFallback()" style="margin-top: 14px; background: none; border: none; color: #9ca3af; font-size: 12px; cursor: pointer;">
-        Fechar
+        Fechar janela
       </button>
     </div>
   </div>
 
   <script>
-    // DADOS FIXOS
-    const WA_NUMBER = "5567996607490"; // Seu WhatsApp: +55 67 99660-7490
-    const ORIGIN_CEP = "79380000";
+    // CONFIGURAÇÕES FIXAS
+    const WA_NUMBER = "5567996607490";
+    const STORAGE_KEY_CART = "aura_decantes_cart_v1";
 
-    // CATÁLOGO COM OS 5 PERFUMES
+    // CATÁLOGO DE PERFUMES
     const PERFUMES = [
       {
         id: "effervescent",
@@ -918,7 +1098,7 @@
         name: "Egeo Bomb Black",
         brand: "O Boticário",
         vibe: "Baladeiro & Marcante",
-        desc: "Combinação provocante de caramelo salgado e couro. Um doce sedutor perfeito para a noite e saídas.",
+        desc: "Combinação provocante de caramelo salgado e couro. Um doce sedutor perfeito para a noite e encontros.",
         notes: "Caramelo Salgado, Couro Nobre, Cacau e Fava Tonka",
         price5ml: 26,
         price10ml: 46
@@ -929,7 +1109,7 @@
         brand: "Natura",
         vibe: "Ultra Sofisticado",
         desc: "O ápice da perfumaria nacional com processo de maturação em madeiras nobres. Presença elegante e imponente.",
-        notes: "Copaíba preciosa, Vetiver do Haiti, Mirra e Âmbar quente",
+        notes: "Copaíba Preciosa, Vetiver do Haiti, Mirra e Âmbar Quente",
         price5ml: 35,
         price10ml: 62
       },
@@ -938,7 +1118,7 @@
         name: "Kaiak Aero",
         brand: "Natura",
         vibe: "Frescor Extremo",
-        desc: "O perfume perfeito para o calor brasileiro. Sensação de vento marítimo gelado com ruibarbo e notas tônicas.",
+        desc: "O perfume perfeito para o calor sul-mato-grossense. Sensação de vento marítimo gelado com ruibarbo e notas tônicas.",
         notes: "Ruibarbo, Notas Oceânicas Tônicas, Zimbro e Cedro",
         price5ml: 24,
         price10ml: 42
@@ -965,13 +1145,90 @@
     };
 
     let cart = [];
-    let selectedShipping = null; // { name, price, days }
+    let selectedShipping = null; // { name, price, days, cityInfo, cep }
+    let shippingOptionsList = [];
+
+    // UTILITÁRIO DE FORMATAÇÃO DE MOEDA
+    function formatBRL(value) {
+      return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    }
+
+    // RENDERIZAÇÃO SEGURA DE ÍCONES LUCIDE
+    function safeCreateIcons() {
+      if (typeof window.lucide !== "undefined" && window.lucide.createIcons) {
+        window.lucide.createIcons();
+      }
+    }
+
+    // NOTIFICAÇÃO FLUTUANTE (TOAST)
+    function showToast(message, isError = false) {
+      const container = document.getElementById("toast-container");
+      const toast = document.createElement("div");
+      toast.className = `toast ${isError ? "error" : ""}`;
+      toast.innerHTML = `
+        <i data-lucide="${isError ? 'alert-circle' : 'check-circle'}" style="width: 18px; height: 18px; color: ${isError ? '#ef4444' : '#d4af37'};"></i>
+        <span>${message}</span>
+      `;
+      container.appendChild(toast);
+      safeCreateIcons();
+
+      requestAnimationFrame(() => {
+        toast.classList.add("show");
+      });
+
+      setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    // PERSISTÊNCIA LOCALSTORAGE
+    function saveCart() {
+      try {
+        localStorage.setItem(STORAGE_KEY_CART, JSON.stringify(cart));
+      } catch (e) {
+        // Ignora erro caso armazenamento esteja restrito
+      }
+    }
+
+    function loadCart() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY_CART);
+        if (saved) {
+          cart = JSON.parse(saved);
+        }
+      } catch (e) {
+        cart = [];
+      }
+    }
 
     // RENDERIZAR O CATÁLOGO
     function renderCatalog() {
       const container = document.getElementById("catalog-container");
-      container.innerHTML = PERFUMES.map(p => {
-        const currentSize = selectedSizes[p.id];
+      const searchInput = document.getElementById("catalog-search");
+      const query = searchInput ? searchInput.value.trim().toLowerCase() : "";
+
+      const filtered = PERFUMES.filter(p => {
+        if (!query) return true;
+        return (
+          p.name.toLowerCase().includes(query) ||
+          p.brand.toLowerCase().includes(query) ||
+          p.notes.toLowerCase().includes(query) ||
+          p.vibe.toLowerCase().includes(query)
+        );
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted);">
+            Nenhum perfume encontrado com "<strong>${query}</strong>".
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(p => {
+        const currentSize = selectedSizes[p.id] || 5;
         const currentPrice = currentSize === 5 ? p.price5ml : p.price10ml;
 
         return `
@@ -991,11 +1248,11 @@
 
               <!-- Seletor de Tamanhos -->
               <div class="size-selector">
-                <button class="size-btn ${currentSize === 5 ? 'active' : ''}" onclick="selectSize('${p.id}', 5)">
+                <button type="button" class="size-btn ${currentSize === 5 ? 'active' : ''}" onclick="selectSize('${p.id}', 5)">
                   5 ml
                   <span>~75 borrifadas</span>
                 </button>
-                <button class="size-btn ${currentSize === 10 ? 'active' : ''}" onclick="selectSize('${p.id}', 10)">
+                <button type="button" class="size-btn ${currentSize === 10 ? 'active' : ''}" onclick="selectSize('${p.id}', 10)">
                   10 ml
                   <span>~150 borrifadas</span>
                 </button>
@@ -1005,15 +1262,15 @@
             <div class="card-footer">
               <div class="price-row">
                 <span class="price-label">Decante de ${currentSize}ml</span>
-                <span class="price-value">R$ ${currentPrice.toFixed(2).replace('.', ',')}</span>
+                <span class="price-value">${formatBRL(currentPrice)}</span>
               </div>
 
               <div class="btn-actions">
-                <button class="btn-buy-wa" onclick="orderSingleItem('${p.id}')">
+                <button type="button" class="btn-buy-wa" onclick="orderSingleItem('${p.id}')">
                   <i data-lucide="message-circle" style="width: 18px; height: 18px;"></i>
                   Pedir no WhatsApp
                 </button>
-                <button class="btn-add-bag" title="Adicionar à sacola" onclick="addToBag('${p.id}')">
+                <button type="button" class="btn-add-bag" title="Adicionar à sacola" onclick="addToBag('${p.id}')">
                   <i data-lucide="plus" style="width: 20px; height: 20px;"></i>
                 </button>
               </div>
@@ -1022,7 +1279,7 @@
         `;
       }).join('');
 
-      lucide.createIcons();
+      safeCreateIcons();
     }
 
     function selectSize(perfumeId, size) {
@@ -1035,11 +1292,9 @@
       const encodedMsg = encodeURIComponent(message);
       const url = `https://api.whatsapp.com/send?phone=${WA_NUMBER}&text=${encodedMsg}`;
 
-      // Configura link do modal de garantia (fallback)
       const fallbackLink = document.getElementById("wa-fallback-link");
       fallbackLink.href = url;
 
-      // Tenta abrir diretamente com elemento âncora nativo
       const a = document.createElement("a");
       a.href = url;
       a.target = "_blank";
@@ -1048,10 +1303,9 @@
       a.click();
       document.body.removeChild(a);
 
-      // Exibe modal de suporte caso o navegador tenha bloqueado popups
       setTimeout(() => {
         document.getElementById("wa-fallback-modal").classList.add("open");
-      }, 350);
+      }, 400);
     }
 
     function closeWaFallback() {
@@ -1061,14 +1315,16 @@
     // PEDIR ITEM ÚNICO DIRETO NO WHATSAPP
     function orderSingleItem(perfumeId) {
       const p = PERFUMES.find(item => item.id === perfumeId);
-      const size = selectedSizes[perfumeId];
+      if (!p) return;
+
+      const size = selectedSizes[perfumeId] || 5;
       const price = size === 5 ? p.price5ml : p.price10ml;
 
-      const msg = `Olá! Vi seu site e gostaria de pedir o seguinte decante:\n\n` +
+      const msg = `Olá! Vi o catálogo da *AURA Decantes* e gostaria de pedir:\n\n` +
                   `✨ *${p.name} (${p.brand})*\n` +
                   `💧 Tamanho: *${size}ml*\n` +
-                  `💰 Valor: *R$ ${price.toFixed(2).replace('.', ',')}*\n\n` +
-                  `Vocês enviam de Miranda - MS, certo? Como podemos combinar pagamento e entrega?`;
+                  `💰 Valor: *${formatBRL(price)}*\n\n` +
+                  `Como podemos combinar o pagamento e a entrega?`;
 
       triggerWhatsApp(msg);
     }
@@ -1076,7 +1332,7 @@
     // CONTATO DIRETO FLUTUANTE
     function directContactWA(e) {
       e.preventDefault();
-      const msg = `Olá! Tenho interesse nos decantes da AURA Decantes (enviados de Miranda - MS). Poderia me passar mais informações?`;
+      const msg = `Olá! Vim pelo site da *AURA Decantes* e gostaria de tirar uma dúvida sobre os perfumes disponíveis.`;
       triggerWhatsApp(msg);
     }
 
@@ -1087,15 +1343,19 @@
       if (open) {
         panel.classList.add("open");
         overlay.classList.add("open");
+        document.body.classList.add("no-scroll");
       } else {
         panel.classList.remove("open");
         overlay.classList.remove("open");
+        document.body.classList.remove("no-scroll");
       }
     }
 
     function addToBag(perfumeId) {
       const p = PERFUMES.find(item => item.id === perfumeId);
-      const size = selectedSizes[perfumeId];
+      if (!p) return;
+
+      const size = selectedSizes[perfumeId] || 5;
       const price = size === 5 ? p.price5ml : p.price10ml;
 
       const existingIndex = cart.findIndex(item => item.id === perfumeId && item.size === size);
@@ -1113,16 +1373,32 @@
         });
       }
 
+      saveCart();
       updateCartUI();
-      toggleBag(true);
+      
+      // Animação no contador
+      const counter = document.getElementById("cart-counter");
+      counter.classList.add("bump");
+      setTimeout(() => counter.classList.remove("bump"), 250);
+
+      showToast(`${p.name} (${size}ml) adicionado à sacola!`);
     }
 
     function changeQty(index, delta) {
+      if (!cart[index]) return;
       cart[index].qty += delta;
       if (cart[index].qty <= 0) {
         cart.splice(index, 1);
       }
+      saveCart();
       updateCartUI();
+    }
+
+    function clearBag() {
+      cart = [];
+      saveCart();
+      updateCartUI();
+      showToast("Sacola esvaziada.");
     }
 
     function updateCartUI() {
@@ -1131,47 +1407,54 @@
       const subtotalEl = document.getElementById("subtotal-val");
       const grandTotalEl = document.getElementById("grand-total-val");
       const shippingEl = document.getElementById("shipping-val");
+      const clearBtn = document.getElementById("clear-bag-btn");
 
       const totalItems = cart.reduce((acc, item) => acc + item.qty, 0);
       countEl.innerText = totalItems;
+      clearBtn.style.display = cart.length > 0 ? "inline-block" : "none";
 
       if (cart.length === 0) {
-        listEl.innerHTML = `<div class="empty-bag"><i data-lucide="package-open" style="width: 36px; height: 36px; margin-bottom: 8px; opacity: 0.5;"></i><br>Sua sacola está vazia.<br>Escolha seus perfumes no catálogo!</div>`;
+        listEl.innerHTML = `
+          <div class="empty-bag">
+            <i data-lucide="package-open" style="width: 36px; height: 36px; margin-bottom: 8px; opacity: 0.5;"></i><br>
+            Sua sacola está vazia.<br>Escolha seus decantes no catálogo!
+          </div>
+        `;
         subtotalEl.innerText = "R$ 0,00";
-        shippingEl.innerText = "A calcular";
+        shippingEl.innerText = selectedShipping ? (selectedShipping.price === 0 ? "Grátis" : formatBRL(selectedShipping.price)) : "A calcular";
         grandTotalEl.innerText = "R$ 0,00";
-        lucide.createIcons();
+        safeCreateIcons();
         return;
       }
 
       const subtotal = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
-      subtotalEl.innerText = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
+      subtotalEl.innerText = formatBRL(subtotal);
 
       let shippingPrice = selectedShipping ? selectedShipping.price : 0;
       if (selectedShipping) {
-        shippingEl.innerText = shippingPrice === 0 ? "Grátis" : `R$ ${shippingPrice.toFixed(2).replace('.', ',')}`;
+        shippingEl.innerText = shippingPrice === 0 ? "Grátis" : formatBRL(shippingPrice);
       } else {
         shippingEl.innerText = "A calcular";
       }
 
       const grandTotal = subtotal + shippingPrice;
-      grandTotalEl.innerText = `R$ ${grandTotal.toFixed(2).replace('.', ',')}`;
+      grandTotalEl.innerText = formatBRL(grandTotal);
 
       listEl.innerHTML = cart.map((item, index) => `
         <div class="bag-item">
           <div class="bag-item-info">
             <h4>${item.name}</h4>
-            <p>${item.size}ml • R$ ${item.price.toFixed(2).replace('.', ',')} un.</p>
+            <p>${item.size}ml • ${formatBRL(item.price)} un.</p>
           </div>
           <div class="bag-item-controls">
-            <button class="bag-qty-btn" onclick="changeQty(${index}, -1)">-</button>
-            <span style="font-size: 13px; font-weight: 600;">${item.qty}</span>
-            <button class="bag-qty-btn" onclick="changeQty(${index}, 1)">+</button>
+            <button type="button" class="bag-qty-btn" onclick="changeQty(${index}, -1)" aria-label="Diminuir quantidade">-</button>
+            <span style="font-size: 13px; font-weight: 600; min-width: 16px; text-align: center;">${item.qty}</span>
+            <button type="button" class="bag-qty-btn" onclick="changeQty(${index}, 1)" aria-label="Aumentar quantidade">+</button>
           </div>
         </div>
       `).join('');
 
-      lucide.createIcons();
+      safeCreateIcons();
     }
 
     // CÁLCULO DE FRETE VIA CEP (ORIGEM: MIRANDA - MS)
@@ -1185,113 +1468,141 @@
 
     async function calculateShipping() {
       const input = document.getElementById("dest-cep");
+      const btn = document.getElementById("cep-btn");
       const cleanCep = input.value.replace(/\D/g, "");
       const resultBox = document.getElementById("shipping-result-box");
 
       if (cleanCep.length !== 8) {
-        alert("Por favor, digite um CEP válido com 8 dígitos.");
+        showToast("Digite um CEP válido com 8 números.", true);
+        input.focus();
         return;
       }
 
-      resultBox.style.display = "block";
-      resultBox.innerHTML = `<div style="font-size: 12px; color: var(--gold-light); text-align: center; padding: 10px;">Consultando CEP...</div>`;
+      btn.disabled = true;
+      resultBox.style.display = "flex";
+      resultBox.innerHTML = `<div style="font-size: 12px; color: var(--gold-light); text-align: center; padding: 8px;">Consultando CEP...</div>`;
 
       try {
         const response = await fetch(`https://viacep.com.br/ws/${cleanCep}/json/`);
+        if (!response.ok) throw new Error("Falha na rede");
         const data = await response.json();
 
         if (data.erro) {
-          resultBox.innerHTML = `<div style="font-size: 12px; color: #ff6b6b; padding: 6px;">CEP não localizado. Verifique e tente novamente.</div>`;
+          selectedShipping = null;
+          resultBox.innerHTML = `<div style="font-size: 12px; color: var(--danger); padding: 6px;">CEP não encontrado. Verifique os números digitados.</div>`;
+          updateCartUI();
           return;
         }
 
-        const isLocalMiranda = cleanCep.startsWith("79380") || data.localidade.toLowerCase() === "miranda";
+        const isLocalMiranda = cleanCep.startsWith("79380") || (data.localidade && data.localidade.toLowerCase() === "miranda");
         const isMS = data.uf === "MS";
-
-        let options = [];
+        const cityInfo = `${data.localidade} - ${data.uf}`;
 
         if (isLocalMiranda) {
-          options = [
-            { name: "Retirada em Mãos (Miranda)", price: 0, days: "No mesmo dia", id: "retirada" },
-            { name: "Entrega Local / Bairros", price: 7.50, days: "1 dia útil", id: "local" }
+          shippingOptionsList = [
+            { name: "Retirada / Combinar em Miranda", price: 0, days: "No mesmo dia", cityInfo, cep: input.value },
+            { name: "Entrega Local (Miranda)", price: 7.50, days: "Até 1 dia útil", cityInfo, cep: input.value }
           ];
         } else if (isMS) {
-          options = [
-            { name: "PAC Regional (MS)", price: 19.90, days: "3 a 6 dias úteis", id: "pac_ms" },
-            { name: "Sedex MS (Expresso)", price: 31.50, days: "1 a 3 dias úteis", id: "sedex_ms" }
+          shippingOptionsList = [
+            { name: "PAC Regional (MS)", price: 19.90, days: "3 a 6 dias úteis", cityInfo, cep: input.value },
+            { name: "Sedex Expresso (MS)", price: 31.50, days: "1 a 3 dias úteis", cityInfo, cep: input.value }
           ];
         } else {
-          // Outros estados
-          options = [
-            { name: "Mini Envios / PAC Decantes", price: 27.90, days: "5 a 9 dias úteis", id: "pac_nac" },
-            { name: "Sedex Expresso", price: 49.90, days: "2 a 4 dias úteis", id: "sedex_nac" }
+          shippingOptionsList = [
+            { name: "PAC / Mini Envios Nacional", price: 27.90, days: "5 a 9 dias úteis", cityInfo, cep: input.value },
+            { name: "Sedex Nacional", price: 49.90, days: "2 a 4 dias úteis", cityInfo, cep: input.value }
           ];
         }
 
-        // Seleciona a primeira opção por padrão
-        selectedShipping = options[0];
-
-        resultBox.innerHTML = `
-          <div style="font-size: 11px; color: #9ca3af; margin-bottom: 6px;">Destino: ${data.localidade} - ${data.uf}</div>
-          ${options.map((opt, i) => `
-            <div class="shipping-option ${i === 0 ? 'selected' : ''}" onclick="pickShipping('${opt.name}', ${opt.price}, '${opt.days}', this)">
-              <div>
-                <strong style="display:block; color: #fff;">${opt.name}</strong>
-                <span>Prazo: ${opt.days}</span>
-              </div>
-              <strong>${opt.price === 0 ? 'GRÁTIS' : 'R$ ' + opt.price.toFixed(2).replace('.', ',')}</strong>
-            </div>
-          `).join('')}
-        `;
-
+        selectedShipping = shippingOptionsList[0];
+        renderShippingOptions();
         updateCartUI();
 
       } catch (err) {
-        resultBox.innerHTML = `<div style="font-size: 12px; color: #ff6b6b; padding: 6px;">Erro ao calcular frete online. Combinaremos no WhatsApp!</div>`;
+        selectedShipping = null;
+        resultBox.innerHTML = `<div style="font-size: 12px; color: var(--danger); padding: 6px;">Não foi possível consultar agora. Combinaremos o frete pelo WhatsApp!</div>`;
+        updateCartUI();
+      } finally {
+        btn.disabled = false;
       }
     }
 
-    function pickShipping(name, price, days, element) {
-      selectedShipping = { name, price, days };
-      document.querySelectorAll(".shipping-option").forEach(el => el.classList.remove("selected"));
-      element.classList.add("selected");
+    function renderShippingOptions() {
+      const resultBox = document.getElementById("shipping-result-box");
+      if (!shippingOptionsList.length) return;
+
+      const cityHeader = shippingOptionsList[0].cityInfo;
+
+      resultBox.innerHTML = `
+        <div style="font-size: 11px; color: #9ca3af; margin-bottom: 4px;">Destino: <strong style="color: #fff;">${cityHeader}</strong></div>
+        ${shippingOptionsList.map((opt, index) => {
+          const isSelected = selectedShipping && selectedShipping.name === opt.name;
+          return `
+            <div class="shipping-option ${isSelected ? 'selected' : ''}" onclick="pickShippingByIndex(${index})">
+              <div>
+                <strong style="display:block; color: #fff;">${opt.name}</strong>
+                <span>Prazo estimado: ${opt.days}</span>
+              </div>
+              <strong>${opt.price === 0 ? 'GRÁTIS' : formatBRL(opt.price)}</strong>
+            </div>
+          `;
+        }).join('')}
+      `;
+    }
+
+    function pickShippingByIndex(index) {
+      if (!shippingOptionsList[index]) return;
+      selectedShipping = shippingOptionsList[index];
+      renderShippingOptions();
       updateCartUI();
     }
 
     // CHECKOUT DA SACOLA NO WHATSAPP
     function checkoutViaWhatsApp() {
       if (cart.length === 0) {
-        alert("Sua sacola está vazia!");
+        showToast("Adicione pelo menos 1 decante na sacola!", true);
         return;
       }
 
       const subtotal = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
-      let shippingPrice = selectedShipping ? selectedShipping.price : 0;
-      let total = subtotal + shippingPrice;
+      const shippingPrice = selectedShipping ? selectedShipping.price : 0;
+      const total = subtotal + shippingPrice;
 
-      let msg = `Olá! Gostaria de fechar o seguinte pedido de decantes na *AURA Decantes*:\n\n`;
-      msg += `📦 *ITENS ESCOLHIDOS:*\n`;
+      let msg = `Olá! Gostaria de fechar meu pedido na *AURA Decantes*:\n\n`;
+      msg += `📦 *ITENS DO PEDIDO:*\n`;
 
       cart.forEach((item, index) => {
-        msg += `${index + 1}. *${item.name}* (${item.size}ml) - ${item.qty}x de R$ ${item.price.toFixed(2).replace('.', ',')}\n`;
+        const lineTotal = item.price * item.qty;
+        msg += `${index + 1}. *${item.name}* (${item.size}ml) — ${item.qty}x de ${formatBRL(item.price)} (${formatBRL(lineTotal)})\n`;
       });
 
-      msg += `\n💰 *Subtotal itens:* R$ ${subtotal.toFixed(2).replace('.', ',')}\n`;
+      msg += `\n💰 *Subtotal:* ${formatBRL(subtotal)}\n`;
 
       if (selectedShipping) {
-        msg += `🚚 *Modalidade de Frete:* ${selectedShipping.name} (${selectedShipping.price === 0 ? 'Grátis' : 'R$ ' + selectedShipping.price.toFixed(2).replace('.', ',')})\n`;
+        msg += `🚚 *Frete:* ${selectedShipping.name} — ${selectedShipping.price === 0 ? 'Grátis' : formatBRL(selectedShipping.price)}\n`;
+        msg += `📍 *Destino:* ${selectedShipping.cityInfo} (CEP: ${selectedShipping.cep})\n`;
       } else {
-        msg += `🚚 *Frete:* A combinar (Origem: Miranda - MS)\n`;
+        msg += `🚚 *Frete:* A combinar (Envio de Miranda - MS)\n`;
       }
 
-      msg += `✨ *TOTAL FINAL:* R$ ${total.toFixed(2).replace('.', ',')}\n\n`;
-      msg += `Por favor, me passe a chave Pix para pagamento e confirmação!`;
+      msg += `\n✨ *VALOR TOTAL:* ${formatBRL(total)}\n\n`;
+      msg += `Pode me enviar a chave Pix para confirmar o pedido?`;
 
       triggerWhatsApp(msg);
     }
 
+    // ATALHO TECLA ESC PARA FECHAR PAINÉIS
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        toggleBag(false);
+        closeWaFallback();
+      }
+    });
+
     // INICIALIZAÇÃO
     window.addEventListener("DOMContentLoaded", () => {
+      loadCart();
       renderCatalog();
       updateCartUI();
     });
